@@ -1,5 +1,8 @@
 'use strict';
 
+// const { Users } = require('./sequelize')
+
+
 // API boilerplate
 let express = require('express');
 let app = express();
@@ -31,8 +34,12 @@ let accessLogStream = FileStreamRotator.getStream({
 });
 app.use(morgan('combined', {stream: accessLogStream}));
 
+
+
 // Load up the routes
 app.use('/', routes);
+
+
 
 // Start the API
 app.listen(config.apiPort);
