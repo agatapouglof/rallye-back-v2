@@ -42,7 +42,7 @@ app.use('/', routes);
 
 
 // Start the API
-app.listen(config.apiPort);
+app.listen(process.env.PORT || config.apiPort );
 console.log("API running on port " + config.apiPort);
 
 // Export API server for testing

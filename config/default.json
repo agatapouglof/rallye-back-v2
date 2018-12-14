@@ -1,10 +1,11 @@
+
 {
   "apiPort": 3000,
   "db" :  {
-    "username": "root",
-    "password": "aaaaaaaa",
+    "username": "rallye",
+    "password": "j8UzPgp8vIdW",
     "database": "rallye",
-    "host": "127.0.0.1",
+    "host": "63.33.110.240",
     "dialect": "mysql"
   }
 }

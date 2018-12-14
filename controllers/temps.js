@@ -106,8 +106,8 @@ exports.classement = (req, res) => {
 
       // console.log(nbSepciale);
       console.log(temps.length)
-      setTimeout(function(elt){
+      // setTimeout(function(elt){
         res.json(temps)
-      },3000)
+      // },3000)
     });
 };
