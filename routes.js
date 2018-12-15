@@ -10,6 +10,7 @@ router.use(middleware.doSomethingInteresting);
 let tasks = require('./controllers/tasks');
 let user = require('./controllers/user');
 let temps = require('./controllers/temps');
+let speciale = require('./controllers/speciale');
 
 router.get('/tasks', tasks.findAll);
 router.post('/buggyroute', tasks.buggyRoute);
@@ -37,6 +38,14 @@ router.put('/temps/:id', temps.updateOne);
 router.delete('/temps/:id', temps.deleteOne);
 router.get('/classement', temps.classement);
 router.get('/temps/speciale/:ordre_speciale', temps.speciale);
+
+// speciales routes
+
+router.post('/speciale/new', speciale.createOne);
+router.get('/speciales', speciale.findAll);
+router.get('/speciale/:id', speciale.findOne);
+router.put('/speciale/:id', speciale.updateOne);
+router.delete('/speciale/:id', speciale.deleteOne);
 
 // Error Handling
 let errors = require('./controllers/errors');
