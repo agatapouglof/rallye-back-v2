@@ -96,6 +96,8 @@ exports.classement = (req, res) => {
 
         pilote.arc = totalTime;
       });
+      temps = temps.filter(function(el){
+        return el.arc > 0 ;});
       temps.sort(function(a, b){return Number(a.arc) - Number(b.arc)});
 
       // setTimeout(function(elt){
