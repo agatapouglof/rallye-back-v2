@@ -62,7 +62,7 @@ exports.speciale = (req, res) => {
           let dbTimeArrivee = elt.arrivee.split('T')[1];
           // let timeMomentDepart = moment().set(dbTimeDepart, 'HH:mm:ss');
           // let timeMomentArrivee = moment().set(dbTimeArrivee, 'HH:mm:ss');
-          let tempsSpeciale = moment.duration(dbTimeArrivee).asSeconds() - moment.duration(dbTimeDepart).asSeconds() - (elt.ams / 1000000);
+          let tempsSpeciale = moment.duration(dbTimeArrivee).asSeconds() - moment.duration(dbTimeDepart).asSeconds() + (elt.ams / 1000000);
           elt.temps = tempsSpeciale;
         }else {
           // delete elt;
@@ -93,7 +93,7 @@ exports.classement = (req, res) => {
             if(tmp.depart && tmp.arrivee){
               let dbTimeDepart = tmp.depart.split('T')[1];
               let dbTimeArrivee = tmp.arrivee.split('T')[1];
-              let tempsSpeciale = moment.duration(dbTimeArrivee).asSeconds() - moment.duration(dbTimeDepart).asSeconds() - (tmp.ams / 1000000);
+              let tempsSpeciale = moment.duration(dbTimeArrivee).asSeconds() - moment.duration(dbTimeDepart).asSeconds() + (tmp.ams / 1000000);
               totalTime += tempsSpeciale;
               // console.log(totalTime)
             }
