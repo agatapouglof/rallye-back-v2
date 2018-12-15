@@ -11,6 +11,8 @@ let routes = require('./routes');
 // Logging
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
+var cors = require('cors');
+
 let fs = require('fs');
 let FileStreamRotator = require('file-stream-rotator');
 let logDirectory = __dirname + '/log';
@@ -42,6 +44,7 @@ app.use('/', routes);
 
 
 // Start the API
+app.use(cors());
 app.listen(process.env.PORT || config.apiPort );
 console.log("API running on port " + config.apiPort);
 
