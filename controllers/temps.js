@@ -20,7 +20,6 @@ const Pilote = PiloteModel(sequelizeConnect, Sequelize);
 
 // get all tempss
 exports.findAll = (req, res) => {
-  console.log(req);
     Temps.findAll().then(temps => res.json(temps))
 };
 
@@ -50,13 +49,11 @@ exports.deleteOne = (req, res) => {
 
 // classement by speciales
 exports.speciale = (req, res) => {
-    console.log("is in speciale")
     Pilote.hasMany(Temps, {foreignKey: 'id_pilote'});
     Temps.belongsTo(Pilote, {foreignKey: 'id_pilote'});
     Temps.findAll({where : {ordre_speciale : req.params.ordre_speciale}, include  : [Pilote]
     }).then(temps => {
       temps.forEach( elt => {
-        // console.log(elt.temps)
         if(elt.depart && elt.arrivee){
           let dbTimeDepart = elt.depart.split('T')[1];
           let dbTimeArrivee = elt.arrivee.split('T')[1];
@@ -69,9 +66,7 @@ exports.speciale = (req, res) => {
         }
       })
       temps = temps.filter(function(el){
-        // console.log(el)
         return el.temps > 0 ;})
-      // console.log(temps);
       temps.sort(function(a, b){return Number(a.temps) - Number(b.temps)});
       res.json(temps)
     })
@@ -100,12 +95,9 @@ exports.classement = (req, res) => {
         })
 
         pilote.arc = totalTime;
-        console.log(pilote)
       });
       temps.sort(function(a, b){return Number(a.arc) - Number(b.arc)});
 
-      // console.log(nbSepciale);
-      console.log(temps.length)
       // setTimeout(function(elt){
         res.json(temps)
       // },3000)
