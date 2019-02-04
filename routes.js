@@ -23,6 +23,10 @@ router.post('/buggyroute', tasks.buggyRoute);
  * @apiParam {id} id Task id
  * @apiSuccess {user} created user object
  */
+
+ router.get('/',function(req,res){
+   res.send('<h1> IT IS ME </h1>')
+ });
 router.post('/user/new', user.createOne);
 router.get('/users', user.findAll);
 router.get('/user/:id', user.findOne);
