@@ -8,9 +8,13 @@ let express = require('express');
 var cors = require('cors');
 let app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// var io = require('socket.io')(server);
+// var io = require('./sockets');
+require('./sockets').listen(server);
+
 
 app.use(cors());
+// app.use(io);
 
 let routes = require('./routes');
 
@@ -46,9 +50,7 @@ app.use(morgan('combined', {stream: accessLogStream}));
 // Load up the routes
 app.use('/', routes);
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-});
+
 
 
 
@@ -56,6 +58,9 @@ io.on('connection', function(socket){
 // app.listen(process.env.PORT || config.apiPort );
 server.listen(process.env.PORT || config.apiPort );
 console.log("API running on port " + config.apiPort);
+
+
+
 
 // Export API server for testing
 // module.exports = app;
