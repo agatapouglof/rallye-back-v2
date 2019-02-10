@@ -12,41 +12,21 @@ module.exports.listen = function(server){
   io.sockets.on('connection', function(socket){
     console.log('connection');
     socket.on('classementpush', (data) => {
-      console.log(data);
+      console.log(data.id_speciale);
       request.get({ url: 'http://localhost:3000/classement', json: true },function(err,res,body){
         if(err) {console.log(err)}
         else{
-          // console.log(body);
-          console.log('classement pushed front');
-          console.log('socket');
-          console.log(socket);
-          socket.emit('classement', body);
-          // io.emit('classement', body);
+          console.log('classement pushed to front');
+          io.emit('classement', body);
+        }
+      });
+      request.get({ url: 'http://localhost:3000/temps/speciale/'+data.id_speciale, json: true },function(err,res,body){
+        if(err) {console.log(err)}
+        else{
+          io.emit('speciale'+data.id_speciale, body);
         }
       });
 
     });
-
-    // events to listen for
-      socket.on('new message',(data) => {
-        console.log('sended new element from the client');
-        console.log(data);
-      });
-      var classe = temps.classements();
-      setTimeout(function(){
-        socket.emit('speciale'+i, {
-          speciale : 'resultat de la speciale',
-          res : classe
-        });
-      }, 5000);
-
-      request.get({ url: 'http://localhost:3000/temps/speciale/1', json: true },function(err,res,body){
-        if(err) {console.log(err)}
-        else{
-          // console.log(body);
-          socket.emit('classement1', body);
-        }
-      });
-
   });
 }

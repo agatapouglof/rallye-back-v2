@@ -1,20 +1,15 @@
 'use strict';
 
-// const { Users } = require('./sequelize')
-
 
 // API boilerplate
 let express = require('express');
 var cors = require('cors');
 let app = express();
 var server = require('http').Server(app);
-// var io = require('socket.io')(server);
-// var io = require('./sockets');
 require('./sockets').listen(server);
 
 
 app.use(cors());
-// app.use(io);
 
 let routes = require('./routes');
 

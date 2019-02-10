@@ -103,36 +103,3 @@ exports.classement = (req, res) => {
         res.json(temps)
     });
 };
-
-exports.classements = () => {
-    Pilote.hasMany(Temps, {foreignKey: 'id_pilote'});
-    Pilote.findAll({include  : [Temps]}).then(temps => {
-      let nbSepciale  = 0;
-      // console.log(temps);
-      console.log(temps.length);
-      temps.forEach(function(elt){ if(elt.temps.length > nbSepciale ) nbSepciale = elt.temps.length; });
-      temps = temps.filter(function(elt){ return elt.temps.length == nbSepciale })
-      // temps.forEach(elt => console.log(elt.temps.length));
-      temps.forEach(pilote => {
-        let totalTime = 0;
-        pilote.temps.forEach(function(tmp){
-            if(tmp.depart && tmp.arrivee){
-              let dbTimeDepart = tmp.depart.split('T')[1];
-              let dbTimeArrivee = tmp.arrivee.split('T')[1];
-              let tempsSpeciale = moment.duration(dbTimeArrivee).asSeconds() - moment.duration(dbTimeDepart).asSeconds() + (tmp.ams / 1000000);
-              totalTime += tempsSpeciale;
-              // console.log(totalTime)
-            }
-        })
-
-        pilote.arc = totalTime;
-      });
-      temps = temps.filter(function(el){
-        return el.arc > 0 ;});
-      temps.sort(function(a, b){return Number(a.arc) - Number(b.arc)});
-      // console.log(temps[0].temps)
-      // console.log(temps.toJSON)
-        // res.json(temps);
-        return temps.toJSON;
-    });
-};
