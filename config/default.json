@@ -6,6 +6,7 @@
     "password": "j8UzPgp8vIdW",
     "database": "rallye",
     "host": "63.33.110.240",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "port" : 3306
   }
 }
