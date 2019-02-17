@@ -71,6 +71,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 'S'
     },
+    logo_voiture: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     abandon: {
       type: DataTypes.INTEGER(1),
       allowNull: false,

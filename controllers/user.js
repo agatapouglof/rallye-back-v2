@@ -12,7 +12,7 @@ const User = UserModel(sequelizeConnect, Sequelize)
 
 // get all users
 exports.findAll = (req, res) => {
-  console.log(req);
+  // console.log(req);
     User.findAll().then(users => res.json(users))
 };
 
