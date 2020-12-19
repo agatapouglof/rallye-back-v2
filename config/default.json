@@ -3,9 +3,9 @@
   "apiPort": 3000,
   "db" :  {
     "username": "rallye",
-    "password": "j8UzPgp8vIdW",
+    "password": "aaaaaaaa",
     "database": "rallye",
-    "host": "63.33.110.240",
+    "host": "db4free.net",
     "dialect": "mysql",
     "port" : 3306
   }
