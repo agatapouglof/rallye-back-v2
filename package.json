@@ -10,22 +10,24 @@
     "test-coverage": "./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- --reporter spec --recursive"
   },
   "dependencies": {
+    "@mysql/xdevapi": "8.0.23",
     "body-parser": "^1.18.3",
     "config": "^1.24.0",
     "cors": "^2.8.5",
+    "custom-env": "^2.0.1",
     "express": "^4.16.4",
     "file-stream-rotator": "0.0.7",
     "moment": "^2.23.0",
     "morgan": "^1.7.0",
-    "mysql2": "^1.6.4",
+    "mysql2": "^2.2.5",
     "request": "^2.88.0",
-    "sequelize": "^4.41.2",
+    "sequelize": "^6.4.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-http": "^4.2.0",
     "istanbul": "^0.4.5",
-    "mocha": "^5.2.0"
+    "mocha": "^8.2.1"
   }
 }

@@ -2,6 +2,8 @@
 
 
 // API boilerplate
+require('custom-env').env(true);
+
 let express = require('express');
 var cors = require('cors');
 let app = express();
