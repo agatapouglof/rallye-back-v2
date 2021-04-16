@@ -53,7 +53,6 @@ exports.deleteOne = (req, res) => {
 exports.pushTime = async (req, res) => {
   const { inputTime }  = req.body;
   let inputTimeFormated = formatReceivedTime(inputTime);
-  inputTimeFormated.ordre_speciale = inputTime.id_speciale;
 
   const { id_pilote, id_speciale } = inputTimeFormated;
   let timeModel = await Temps.findOne({where: { id_pilote, id_speciale }});

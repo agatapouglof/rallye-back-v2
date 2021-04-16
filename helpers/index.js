@@ -6,8 +6,8 @@ const formatReceivedTime = (inputTime) =>{
     const temps = inputArray[4];
     const milisecs = inputArray[5];
 
-    if(type == 'A') return {id_pilote, id_speciale, 'arrivee': temps, 'ams': milisecs};
-    if(type == 'D') return {id_pilote, id_speciale, 'depart': temps };
+    if(type == 'A') return {id_pilote, id_speciale, 'ordre_speciale': id_speciale, 'arrivee': temps, 'ams': milisecs};
+    if(type == 'D') return {id_pilote, id_speciale, 'ordre_speciale': id_speciale, 'depart': temps };
     throw Error('Bad input type');
 }
 
