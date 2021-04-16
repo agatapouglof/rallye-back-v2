@@ -3,6 +3,8 @@
 const Sequelize = require('sequelize');
 let moment = require('moment');
 
+let {formatReceivedTime} = require('../helpers/index.js');
+
 
 let config = require('config');
 const { sequelizeConnect } = require('../sequelize')
@@ -46,6 +48,30 @@ exports.createOne = (req, res) => {
 exports.deleteOne = (req, res) => {
     Temps.destroy({where : {id : req.params.id }}).then(temps =>  res.json(temps))
 };
+
+// add or update time from local api to server
+exports.pushTime = async (req, res) => {
+  const { inputTime }  = req.body;
+  let inputTimeFormated = formatReceivedTime(inputTime);
+  inputTimeFormated.ordre_speciale = inputTime.id_speciale;
+
+  const { id_pilote, id_speciale } = inputTimeFormated;
+  let timeModel = await Temps.findOne({where: { id_pilote, id_speciale }});
+  if(timeModel) {
+    if(inputTimeFormated.hasOwnProperty('depart')) {
+      timeModel.depart = inputTimeFormated.depart;
+    }
+    if(inputTimeFormated.hasOwnProperty('arrivee')){
+      timeModel.arrivee = inputTimeFormated.arrivee;
+      timeModel.ams = inputTimeFormated.ams;
+    } 
+    await timeModel.save();
+    res.sendStatus(200).json("ok")
+  }
+  const temps = await Temps.create(inputTimeFormated);
+  return res.json(temps);
+
+}
 
 // classement by speciales
 exports.speciale = (req, res) => {

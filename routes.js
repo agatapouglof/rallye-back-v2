@@ -43,6 +43,8 @@ router.delete('/temps/:id', temps.deleteOne);
 router.get('/classement', temps.classement);
 router.get('/temps/speciale/:ordre_speciale', temps.speciale);
 
+router.post('/temps/pushTime', temps.pushTime);
+
 // speciales routes
 
 router.post('/speciale/new', speciale.createOne);
