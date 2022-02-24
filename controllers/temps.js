@@ -4,6 +4,7 @@ const Sequelize = require("sequelize");
 let moment = require("moment");
 
 let { formatReceivedTime } = require("../helpers/index.js");
+const { classementParSpeciale } = require("../helpers/time-manager.js");
 
 let config = require("config");
 const { sequelizeConnect } = require("../sequelize");
@@ -62,7 +63,7 @@ exports.pushTime = async (req, res) => {
 
   let inputTimeFormated = formatReceivedTime(inputTime);
 
-  const { id_pilote, id_speciale } = inputTimeFormated;
+  const { id_pilote, id_speciale, ams } = inputTimeFormated;
 
   try {
     const timeData = inputTimeFormated?.depart
@@ -71,11 +72,14 @@ exports.pushTime = async (req, res) => {
 
     const dataType = inputTimeFormated?.depart ? "Depart" : "Arrivee";
     const hms = timeData.split("T")[1];
+    const ams = inputTimeFormated?.arrivee
+      ? inputTimeFormated?.ams.substring(0, 3)
+      : "000";
 
     let timeModel = await Temps.findOne({ where: { id_pilote, id_speciale } });
     let piloteModel = await Pilote.findByPk(id_pilote);
 
-    const smsMessage = `Speciale: ${id_speciale} \nEquipage : ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote} \n${dataType}: ${hms}`;
+    const smsMessage = `Speciale: ${id_speciale} \nEquipage : ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote} \n${dataType} ${hms}.${ams}`;
     if (timeModel) {
       if (inputTimeFormated.hasOwnProperty("depart")) {
         timeModel.depart = inputTimeFormated.depart;
@@ -97,36 +101,9 @@ exports.pushTime = async (req, res) => {
 };
 
 // classement by speciales
-exports.speciale = (req, res) => {
-  Pilote.hasMany(Temps, { foreignKey: "id_pilote" });
-  Temps.belongsTo(Pilote, { foreignKey: "id_pilote" });
-  Temps.findAll({
-    where: { ordre_speciale: req.params.ordre_speciale },
-    include: [Pilote],
-  }).then((temps) => {
-    temps.forEach((elt) => {
-      if (elt.depart && elt.arrivee) {
-        let dbTimeDepart = elt.depart.split("T")[1];
-        let dbTimeArrivee = elt.arrivee.split("T")[1];
-        // let timeMomentDepart = moment().set(dbTimeDepart, 'HH:mm:ss');
-        // let timeMomentArrivee = moment().set(dbTimeArrivee, 'HH:mm:ss');
-        let tempsSpeciale =
-          moment.duration(dbTimeArrivee).asSeconds() -
-          moment.duration(dbTimeDepart).asSeconds() +
-          elt.ams / 1000000;
-        elt.temps = tempsSpeciale;
-      } else {
-        // delete elt;
-      }
-    });
-    temps = temps.filter(function (el) {
-      return el.temps > 0;
-    });
-    temps.sort(function (a, b) {
-      return Number(a.temps) - Number(b.temps);
-    });
-    res.json(temps);
-  });
+exports.speciale = async (req, res) => {
+  const temps = await classementParSpeciale(req.params.ordre_speciale);
+  return res.json(temps);
 };
 
 exports.classement = (req, res) => {
