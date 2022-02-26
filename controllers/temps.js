@@ -98,17 +98,17 @@ exports.pushTime = async (req, res) => {
           id_pilote,
           id_speciale
         )}`;
-      getPiloteTempsBySpeciale(id_pilote, id_speciale);
       await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
       await smsCopy(smsMessage);
       return res.sendStatus(200);
     }
-    if (inputTimeFormated?.arrivee)
+    const temps = await Temps.create(inputTimeFormated);
+    if (inputTimeFormated?.arrivee) {
       smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
         id_pilote,
         id_speciale
       )}`;
-    const temps = await Temps.create(inputTimeFormated);
+    }
     await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
     await smsCopy(smsMessage);
     return res.json(temps);
