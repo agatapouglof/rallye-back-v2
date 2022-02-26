@@ -93,11 +93,12 @@ exports.pushTime = async (req, res) => {
         timeModel.ams = inputTimeFormated.ams;
       }
       await timeModel.save();
-      if (inputTimeFormated?.arrivee)
+      if (inputTimeFormated?.arrivee) {
         smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
           id_pilote,
           id_speciale
         )}`;
+      }
       await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
       await smsCopy(smsMessage);
       return res.sendStatus(200);
