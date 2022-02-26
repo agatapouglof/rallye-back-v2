@@ -68,6 +68,33 @@ const getPiloteTempsBySpeciale = async (id_pilote, id_speciale) => {
   return res;
 };
 
+const sendTimeSmsToPilote = async (id_pilote, id_speciale) => {
+  await sequelizeConnect.sync();
+  const piloteTime = await Temps.findOne({ where: { id_pilote, id_speciale } });
+  let piloteModel = await Pilote.findByPk(id_pilote);
+
+  if (piloteTime && piloteTime.arrivee && piloteTime.depart) {
+    const piloteTimeText = await getPiloteTempsBySpeciale(
+      id_pilote,
+      id_speciale
+    );
+
+    const hmsDepart = piloteTime.depart.split("T")[1];
+    const hmsArrivee = piloteTime.arrivee.split("T")[1];
+    const ams = piloteTime?.ams ? `${piloteTime.ams}`.substring(0, 3) : "000";
+    const smsMessage =
+      `Speciale: ${id_speciale}` +
+      `\nEquipage: ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote}` +
+      `\nDepart: ${hmsDepart}` +
+      `\nArrivee: ${hmsArrivee}.${ams}` +
+      `\nTEMPS\n` +
+      `${piloteTimeText}`;
+
+    await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
+    await smsCopy(smsMessage);
+  }
+};
+
 const formatSecondesAsText = (secs, ms) => {
   let time = moment().startOf("day").seconds(secs).format(`HH'mm"ss`);
   if (ms) time += `.${ms}`;
@@ -83,4 +110,9 @@ const smsCopy = async (smsMessage) => {
   }
 };
 
-module.exports = { classementParSpeciale, getPiloteTempsBySpeciale, smsCopy };
+module.exports = {
+  classementParSpeciale,
+  getPiloteTempsBySpeciale,
+  smsCopy,
+  sendTimeSmsToPilote,
+};

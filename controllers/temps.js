@@ -6,8 +6,7 @@ let moment = require("moment");
 let { formatReceivedTime } = require("../helpers/index.js");
 const {
   classementParSpeciale,
-  getPiloteTempsBySpeciale,
-  smsCopy,
+  sendTimeSmsToPilote,
 } = require("../helpers/time-manager.js");
 
 let config = require("config");
@@ -70,20 +69,8 @@ exports.pushTime = async (req, res) => {
   const { id_pilote, id_speciale } = inputTimeFormated;
 
   try {
-    const timeData = inputTimeFormated?.depart
-      ? inputTimeFormated.depart
-      : inputTimeFormated.arrivee;
-
-    const dataType = inputTimeFormated?.depart ? "Depart" : "Arrivee";
-    const hms = timeData.split("T")[1];
-    const ams = inputTimeFormated?.arrivee
-      ? inputTimeFormated?.ams.substring(0, 3)
-      : "000";
-
     let timeModel = await Temps.findOne({ where: { id_pilote, id_speciale } });
-    let piloteModel = await Pilote.findByPk(id_pilote);
 
-    let smsMessage = `Speciale: ${id_speciale} \nEquipage : ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote} \n${dataType} ${hms}.${ams}`;
     if (timeModel) {
       if (inputTimeFormated.hasOwnProperty("depart")) {
         timeModel.depart = inputTimeFormated.depart;
@@ -93,25 +80,15 @@ exports.pushTime = async (req, res) => {
         timeModel.ams = inputTimeFormated.ams;
       }
       await timeModel.save();
-      if (inputTimeFormated.hasOwnProperty("arrivee")) {
-        smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
-          id_pilote,
-          id_speciale
-        )}`;
-      }
-      await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
-      await smsCopy(smsMessage);
+      await sendTimeSmsToPilote(id_pilote, id_speciale);
+
       return res.sendStatus(200);
     }
     const temps = await Temps.create(inputTimeFormated);
-    if (inputTimeFormated.hasOwnProperty("arrivee")) {
-      smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
-        id_pilote,
-        id_speciale
-      )}`;
-    }
+
     await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
     await smsCopy(smsMessage);
+
     return res.json(temps);
   } catch (error) {
     console.error(error);
