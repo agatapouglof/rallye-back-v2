@@ -54,13 +54,16 @@ const classementParSpeciale = async (idSpeciale) => {
 const getPiloteTempsBySpeciale = async (id_pilote, id_speciale) => {
   await sequelizeConnect.sync();
   const piloteTime = await Temps.findOne({ where: { id_pilote, id_speciale } });
-  const dbTimeDepart = piloteTime.depart.split("T")[1];
-  const dbTimeArrivee = piloteTime.arrivee.split("T")[1];
-  const tempsSpeciale =
-    moment.duration(dbTimeArrivee).asSeconds() -
-    moment.duration(dbTimeDepart).asSeconds();
+  let res = "";
+  if (piloteTime.depart && piloteTime.arrivee) {
+    const dbTimeDepart = piloteTime.depart.split("T")[1];
+    const dbTimeArrivee = piloteTime.arrivee.split("T")[1];
+    const tempsSpeciale =
+      moment.duration(dbTimeArrivee).asSeconds() -
+      moment.duration(dbTimeDepart).asSeconds();
 
-  res = formatSecondesAsText(tempsSpeciale, piloteTime.ams / 1000);
+    res = formatSecondesAsText(tempsSpeciale, piloteTime.ams / 1000);
+  }
 
   return res;
 };
