@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const formatReceivedTime = (inputTime) => {
   const inputArray = inputTime.split("*");
   const type = inputArray[1];

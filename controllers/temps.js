@@ -4,7 +4,11 @@ const Sequelize = require("sequelize");
 let moment = require("moment");
 
 let { formatReceivedTime } = require("../helpers/index.js");
-const { classementParSpeciale } = require("../helpers/time-manager.js");
+const {
+  classementParSpeciale,
+  getPiloteTempsBySpeciale,
+  smsCopy,
+} = require("../helpers/time-manager.js");
 
 let config = require("config");
 const { sequelizeConnect } = require("../sequelize");
@@ -79,7 +83,7 @@ exports.pushTime = async (req, res) => {
     let timeModel = await Temps.findOne({ where: { id_pilote, id_speciale } });
     let piloteModel = await Pilote.findByPk(id_pilote);
 
-    const smsMessage = `Speciale: ${id_speciale} \nEquipage : ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote} \n${dataType} ${hms}.${ams}`;
+    let smsMessage = `Speciale: ${id_speciale} \nEquipage : ${id_pilote} ${piloteModel.nom_pilote}/${piloteModel.nom_copilote} \n${dataType} ${hms}.${ams}`;
     if (timeModel) {
       if (inputTimeFormated.hasOwnProperty("depart")) {
         timeModel.depart = inputTimeFormated.depart;
@@ -89,11 +93,24 @@ exports.pushTime = async (req, res) => {
         timeModel.ams = inputTimeFormated.ams;
       }
       await timeModel.save();
+      if (inputTimeFormated?.arrivee)
+        smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
+          id_pilote,
+          id_speciale
+        )}`;
+      getPiloteTempsBySpeciale(id_pilote, id_speciale);
       await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
+      await smsCopy(smsMessage);
       return res.sendStatus(200);
     }
+    if (inputTimeFormated?.arrivee)
+      smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
+        id_pilote,
+        id_speciale
+      )}`;
     const temps = await Temps.create(inputTimeFormated);
     await SmsOci.sendSmsOci(piloteModel.phone_number, smsMessage);
+    await smsCopy(smsMessage);
     return res.json(temps);
   } catch (error) {
     console.error(error);

@@ -15,8 +15,10 @@ let TempsModel = require("../models/temps.js");
 const Temps = TempsModel(sequelizeConnect, Sequelize);
 
 let PiloteModel = require("../models/pilote.js");
-
 const Pilote = PiloteModel(sequelizeConnect, Sequelize);
+
+let SmsCopyModel = require("../models/sms_copy.js");
+const SmsCopy = SmsCopyModel(sequelizeConnect, Sequelize);
 
 // classement by speciales
 const classementParSpeciale = async (idSpeciale) => {
@@ -48,4 +50,34 @@ const classementParSpeciale = async (idSpeciale) => {
   });
   return temps;
 };
-module.exports = { classementParSpeciale };
+
+const getPiloteTempsBySpeciale = async (id_pilote, id_speciale) => {
+  await sequelizeConnect.sync();
+  const piloteTime = await Temps.findOne({ where: { id_pilote, id_speciale } });
+  const dbTimeDepart = piloteTime.depart.split("T")[1];
+  const dbTimeArrivee = piloteTime.arrivee.split("T")[1];
+  const tempsSpeciale =
+    moment.duration(dbTimeArrivee).asSeconds() -
+    moment.duration(dbTimeDepart).asSeconds();
+
+  res = formatSecondesAsText(tempsSpeciale, piloteTime.ams / 1000);
+
+  return res;
+};
+
+const formatSecondesAsText = (secs, ms) => {
+  let time = moment().startOf("day").seconds(secs).format(`HH'mm"ss`);
+  if (ms) time += `.${ms}`;
+  return time;
+};
+
+const smsCopy = async (smsMessage) => {
+  await sequelizeConnect.sync();
+
+  const followers = await SmsCopy.findAll();
+  for (const follower of followers) {
+    await SmsOci.sendSmsOci(follower.phone, smsMessage);
+  }
+};
+
+module.exports = { classementParSpeciale, getPiloteTempsBySpeciale, smsCopy };
