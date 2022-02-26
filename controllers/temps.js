@@ -93,7 +93,7 @@ exports.pushTime = async (req, res) => {
         timeModel.ams = inputTimeFormated.ams;
       }
       await timeModel.save();
-      if (inputTimeFormated?.arrivee) {
+      if (inputTimeFormated.hasOwnProperty("arrivee")) {
         smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
           id_pilote,
           id_speciale
@@ -104,7 +104,7 @@ exports.pushTime = async (req, res) => {
       return res.sendStatus(200);
     }
     const temps = await Temps.create(inputTimeFormated);
-    if (inputTimeFormated?.arrivee) {
+    if (inputTimeFormated.hasOwnProperty("arrivee")) {
       smsMessage += `\nTEMPS:\n${await getPiloteTempsBySpeciale(
         id_pilote,
         id_speciale
