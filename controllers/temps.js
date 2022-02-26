@@ -67,7 +67,7 @@ exports.pushTime = async (req, res) => {
 
   let inputTimeFormated = formatReceivedTime(inputTime);
 
-  const { id_pilote, id_speciale, ams } = inputTimeFormated;
+  const { id_pilote, id_speciale } = inputTimeFormated;
 
   try {
     const timeData = inputTimeFormated?.depart
