@@ -17,7 +17,7 @@
     "custom-env": "^2.0.1",
     "express": "^4.16.4",
     "file-stream-rotator": "0.0.7",
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "morgan": "^1.7.0",
     "mysql2": "^2.2.5",
     "request": "^2.88.0",
