@@ -15,7 +15,7 @@
     "config": "^1.24.0",
     "cors": "^2.8.5",
     "custom-env": "^2.0.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "file-stream-rotator": "0.0.7",
     "moment": "^2.23.0",
     "morgan": "^1.7.0",
